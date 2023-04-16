@@ -2,6 +2,7 @@ from delivery_client.discord import Discord
 from news_platform.mit import MIT
 from news_platform.google import Google
 from news_platform.gizmodo import Gizmodo
+from news_platform.gigazine import Gigazine
 
 import os
 
@@ -21,6 +22,11 @@ def delivery():
     gizmodo_channel = Discord(os.environ.get("DISCORD_WEBHOOK_GIZMODO"))
     gizmodo = Gizmodo()
     gizmodo.news_delivery(delivery_client=gizmodo_channel)
+
+    # Gigazineの配信
+    gigazine_channel = Discord(os.environ.get("DISCORD_WEBHOOK_GIGAZINE"))
+    gigazine = Gigazine()
+    gigazine.news_delivery(delivery_client=gigazine_channel)
 
     # TODO: NewsPicksの配信
 
