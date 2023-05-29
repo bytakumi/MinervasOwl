@@ -11,7 +11,6 @@ class Discord(DeliveryClientInterface):
         for article in articles:
             contents.append({
                 "title": article["title"],
-                "description": article["summary"],
                 "url": article["url"],
                 "author": {
                     "name": article["author"],
