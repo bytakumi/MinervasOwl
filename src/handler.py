@@ -2,6 +2,7 @@ from .delivery_client.discord import Discord
 from .news_platform.mit import MIT
 from .news_platform.google import Google
 from .news_platform.gizmodo import Gizmodo
+from .news_platform.notify import Notify
 
 import os
 
@@ -20,6 +21,12 @@ def handler(event, context):
     gizmodo_channel = Discord(os.environ.get("DISCORD_WEBHOOK_GIZMODO"))
     gizmodo = Gizmodo()
     gizmodo.news_delivery(delivery_client=gizmodo_channel)
+
+    # ニュースが配信されたことを通知する
+    notify_channel = Discord(os.environ.get("DISCORD_WEBHOOK_NOTIFY"))
+    notify = Notify()
+    notify.news_delivery(delivery_client=notify_channel)
+
 
     # TODO: NewsPicksの配信
 
