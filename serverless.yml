@@ -1,0 +1,80 @@
+useDotenv: true
+service: minervasowl
+app: minervasowl
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: ap-northeast-1
+  stage: prd
+  timeout: 180
+  # ==============
+  # 環境変数
+  # --------------
+  environment:
+    DISCORD_WEBHOOK_GIGAZINE: '${env:DISCORD_WEBHOOK_GIGAZINE}'
+    DISCORD_WEBHOOK_GOOGLE: '${env:DISCORD_WEBHOOK_GOOGLE}'
+    DISCORD_WEBHOOK_GIZMODE: '${env:DISCORD_WEBHOOK_GIZMODE}'
+    DISCORD_WEBHOOK_MIT: '${env:DISCORD_WEBHOOK_MIT}'
+  # ==============
+  # IAM
+  # --------------
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:*"
+          Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/news"
+
+# ==============
+# DynamoDB
+# --------------
+resources:
+  Resources:
+    commentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: 'news'
+        AttributeDefinitions:
+          - AttributeName: title
+            AttributeType: S
+          - AttributeName: provider
+            AttributeType: S
+        KeySchema:
+          - AttributeName: title
+            KeyType: HASH
+          - AttributeName: provider
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+# ==============
+# Lambda
+# --------------
+functions:
+  notify:
+    handler: src.handler.handler
+    events:
+      - schedule: cron(00 10 ? * * *)
+
+# ==============
+# Plugins
+# --------------
+plugins:
+  - serverless-python-requirements
+  - serverless-dynamodb-local
+
+# ==============
+# Custom
+# --------------
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      inMemory: true
+      migrate: true

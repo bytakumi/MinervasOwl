@@ -1,12 +1,11 @@
-from delivery_client.discord import Discord
-from news_platform.mit import MIT
-from news_platform.google import Google
-from news_platform.gizmodo import Gizmodo
+from .delivery_client.discord import Discord
+from .news_platform.mit import MIT
+from .news_platform.google import Google
+from .news_platform.gizmodo import Gizmodo
 
 import os
 
-
-def delivery():
+def handler(event, context):
     # MIT Technology Review JPの配信
     mit_channel = Discord(os.environ.get("DISCORD_WEBHOOK_MIT"))
     mit = MIT()
@@ -41,6 +40,10 @@ def delivery():
     # TODO: BBC Newsの配信
 
     # TODO: PublicKeyの配信
+
+    return {
+        "statusCode": 200,
+    }
 
 
 if __name__ == "__main__":
