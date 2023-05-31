@@ -3,6 +3,7 @@ from .news_platform.mit import MIT
 from .news_platform.google import Google
 from .news_platform.gizmodo import Gizmodo
 from .news_platform.notify import Notify
+from .news_platform.gatesnotes import GatesNotes
 
 import os
 
@@ -21,6 +22,11 @@ def handler(event, context):
     gizmodo_channel = Discord(os.environ.get("DISCORD_WEBHOOK_GIZMODO"))
     gizmodo = Gizmodo()
     gizmodo.news_delivery(delivery_client=gizmodo_channel)
+
+    # GatesNotesの配信
+    gatesnotes_channel = Discord(os.environ.get("DISCORD_WEBHOOK_GATESNOTES"))
+    gatesnotes = GatesNotes()
+    gatesnotes.news_delivery(delivery_client=gatesnotes_channel)
 
     # ニュースが配信されたことを通知する
     notify_channel = Discord(os.environ.get("DISCORD_WEBHOOK_NOTIFY"))
@@ -54,4 +60,4 @@ def handler(event, context):
 
 
 if __name__ == "__main__":
-    delivery()
+    handler({}, {})
